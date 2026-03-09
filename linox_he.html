@@ -1,0 +1,1190 @@
+
+Cyber lms hebrew · HTML
+Copy
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>סייבר//לינוקס — טרמינל לימוד</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Heebo:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --void: #050508;
+  --base: #090912;
+  --surface: #0d0d1a;
+  --elevated: #121220;
+  --card: #161628;
+  --hover: #1c1c30;
+  --border: #1a2234;
+  --border-bright: #00ff8835;
+  --ng: #00ff88;
+  --nc: #00d4ff;
+  --np: #a855f7;
+  --nr: #ff3366;
+  --ny: #fbbf24;
+  --ng-dim: #00ff8818;
+  --nc-dim: #00d4ff18;
+  --np-dim: #a855f718;
+  --nr-dim: #ff336618;
+  --ny-dim: #fbbf2418;
+  --ng-glow: 0 0 20px #00ff8855, 0 0 40px #00ff8820;
+  --nc-glow: 0 0 20px #00d4ff55, 0 0 40px #00d4ff20;
+  --t1: #dff5e8;
+  --t2: #8aa89a;
+  --t3: #3d5048;
+  --mono: 'Share Tech Mono', 'Courier New', monospace;
+  --ui: 'Heebo', sans-serif;
+  --display: 'Orbitron', sans-serif;
+  --sb: 280px;
+  --hh: 56px;
+  --r: 5px;
+  --ease: 0.18s cubic-bezier(0.4,0,0.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body {
+  font-family: var(--ui);
+  background: var(--void);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  direction: rtl;
+}
+
+body::before {
+  content:'';
+  position:fixed;inset:0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,136,0.008) 3px,rgba(0,255,136,0.008) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--base)}
+::-webkit-scrollbar-thumb{background:#00ff8830;border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:#00ff8860}
+
+/* ===== פריסה ===== */
+#app{display:grid;grid-template-columns:1fr var(--sb);grid-template-rows:var(--hh) 1fr;grid-template-areas:"hdr hdr" "main sb";height:100vh;overflow:hidden}
+
+/* ===== כותרת עליונה ===== */
+#hdr {
+  grid-area:hdr;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  position:relative;z-index:50;gap:16px;
+  flex-direction:row-reverse;
+}
+
+#hdr::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--ng) 40%,var(--nc) 60%,transparent 100%);
+  opacity:0.35;
+}
+
+.logo {display:flex;align-items:center;gap:11px;flex-shrink:0;cursor:pointer;flex-direction:row-reverse}
+
+.logo-box {
+  width:34px;height:34px;
+  border:1.5px solid var(--ng);border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:var(--ng);
+  box-shadow:var(--ng-glow);
+  animation:logoflicker 6s ease-in-out infinite;
+}
+
+@keyframes logoflicker{0%,90%,100%{opacity:1}92%{opacity:0.4}94%{opacity:1}96%{opacity:0.7}}
+
+.logo-text {font-family:var(--display);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--ng);text-shadow:0 0 12px var(--ng);line-height:1.15;text-align:right}
+.logo-sub {font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--t3);text-align:right}
+
+/* סרגל התקדמות */
+.hdr-progress {flex:1;display:flex;align-items:center;gap:12px;max-width:400px;flex-direction:row-reverse}
+.hdr-progress-label {font-family:var(--ui);font-size:11px;color:var(--t3);white-space:nowrap;font-weight:600}
+.progress-track {flex:1;height:3px;background:var(--elevated);border-radius:2px;overflow:hidden}
+.progress-fill {height:100%;background:linear-gradient(270deg,var(--ng),var(--nc));border-radius:2px;transition:width 0.8s ease;box-shadow:0 0 8px var(--ng);width:0%}
+.progress-pct {font-family:var(--mono);font-size:11px;color:var(--ng);min-width:34px;text-align:left}
+
+.hdr-right {display:flex;align-items:center;gap:12px;flex-shrink:0}
+.online-badge {font-family:var(--mono);font-size:10px;padding:3px 10px;border:1px solid var(--ng);border-radius:2px;color:var(--ng);box-shadow:0 0 8px #00ff8825;letter-spacing:1px}
+.online-badge::before{content:'● ';animation:blink 2s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.completed-counter {font-family:var(--ui);font-size:11px;color:var(--t3);font-weight:600}
+.completed-counter span {color:var(--ng)}
+
+/* ===== סרגל צד ===== */
+#sb {
+  grid-area:sb;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding-bottom:32px;
+  direction:rtl;
+}
+
+.sb-header {
+  padding:18px 18px 12px;
+  border-bottom:1px solid var(--border);
+}
+
+.sb-title {font-family:var(--ui);font-size:10px;letter-spacing:1px;color:var(--t3);text-transform:uppercase;font-weight:700}
+
+.level-group {margin-top:4px}
+
+.level-btn {
+  display:flex;align-items:center;gap:9px;
+  padding:9px 18px;
+  cursor:pointer;transition:background var(--ease);
+  user-select:none;position:relative;width:100%;border:none;background:transparent;text-align:right;
+  flex-direction:row-reverse;
+}
+
+.level-btn:hover{background:var(--hover)}
+
+.lvl-badge {
+  font-family:var(--display);font-size:9px;font-weight:700;
+  width:20px;height:20px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+.l1 .lvl-badge{background:var(--ng-dim);border:1px solid #00ff8850;color:var(--ng)}
+.l2 .lvl-badge{background:var(--nc-dim);border:1px solid #00d4ff50;color:var(--nc)}
+.l3 .lvl-badge{background:var(--np-dim);border:1px solid #a855f750;color:var(--np)}
+.l4 .lvl-badge{background:var(--nr-dim);border:1px solid #ff336650;color:var(--nr)}
+.l5 .lvl-badge{background:var(--ny-dim);border:1px solid #fbbf2450;color:var(--ny)}
+
+.lvl-info{flex:1;min-width:0;text-align:right}
+.lvl-name{font-family:var(--ui);font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.l1 .lvl-name{color:var(--ng)} .l2 .lvl-name{color:var(--nc)} .l3 .lvl-name{color:var(--np)} .l4 .lvl-name{color:var(--nr)} .l5 .lvl-name{color:var(--ny)}
+.lvl-sub{font-family:var(--ui);font-size:10px;color:var(--t3);margin-top:1px}
+
+.lvl-arrow{font-family:var(--mono);font-size:11px;color:var(--t3);transition:transform var(--ease);flex-shrink:0}
+.level-group.open .lvl-arrow{transform:rotate(-90deg)}
+
+.lvl-pbar{height:1px;margin:0 18px 1px;background:var(--border);overflow:hidden}
+.l1 .lvl-pbar-fill{background:var(--ng)} .l2 .lvl-pbar-fill{background:var(--nc)} .l3 .lvl-pbar-fill{background:var(--np)} .l4 .lvl-pbar-fill{background:var(--nr)} .l5 .lvl-pbar-fill{background:var(--ny)}
+.lvl-pbar-fill{height:100%;transition:width 0.7s ease;box-shadow:0 0 6px currentColor}
+
+.lesson-list{display:none;padding:2px 0}
+.level-group.open .lesson-list{display:block}
+
+.lesson-btn {
+  display:flex;align-items:center;gap:8px;
+  padding:7px 18px 7px 18px;
+  padding-right:32px;
+  cursor:pointer;transition:all var(--ease);
+  font-family:var(--ui);font-size:12px;color:var(--t2);
+  background:transparent;border:none;text-align:right;width:100%;
+  position:relative;
+  flex-direction:row-reverse;
+}
+
+.lesson-btn:hover{color:var(--t1);background:var(--hover)}
+.lesson-btn.active{color:var(--ng);background:var(--ng-dim)}
+.lesson-btn.active::after{content:'';position:absolute;right:0;top:0;bottom:0;width:2px;background:var(--ng);box-shadow:var(--ng-glow)}
+
+.lesson-dot{width:14px;height:14px;border-radius:2px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;flex-shrink:0;transition:all var(--ease)}
+.lesson-btn.done .lesson-dot{background:var(--ng-dim);border-color:var(--ng);color:var(--ng)}
+.lesson-btn.active .lesson-dot{border-color:var(--ng);animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.lesson-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+
+/* ===== תוכן ראשי ===== */
+#main {
+  grid-area:main;
+  overflow-y:auto;
+  background:var(--void);
+}
+
+#content {
+  max-width:820px;
+  margin:0 auto;
+  padding:36px 36px 80px;
+}
+
+/* דף שיעור */
+.lesson-page {animation:fadein 0.3s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.lesson-crumb {
+  font-family:var(--ui);font-size:11px;color:var(--t3);
+  display:flex;align-items:center;gap:6px;margin-bottom:20px;
+  flex-direction:row-reverse;justify-content:flex-end;
+}
+.crumb-sep{color:var(--ng);opacity:0.4}
+.crumb-cur{color:var(--nc)}
+
+.lesson-hdr{margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border);position:relative;text-align:right}
+.lesson-hdr::after{content:'';position:absolute;bottom:0;right:0;width:50px;height:1px;background:var(--ng);box-shadow:0 0 8px var(--ng)}
+
+.lesson-lvl-tag {
+  font-family:var(--ui);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;flex-direction:row-reverse;
+}
+.tag-dot{width:5px;height:5px;border-radius:50%;background:var(--ng);box-shadow:0 0 6px var(--ng)}
+
+.lesson-title {
+  font-family:var(--ui);font-size:clamp(18px,2.5vw,28px);
+  font-weight:700;color:var(--t1);
+  line-height:1.3;margin-bottom:10px;
+}
+
+.lesson-desc {font-size:14px;color:var(--t2);line-height:1.9;max-width:620px;margin-right:0;margin-left:auto}
+
+.lesson-meta {display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;flex-direction:row-reverse}
+.meta-pill {font-family:var(--ui);font-size:10px;color:var(--t3);padding:3px 9px;border:1px solid var(--border);border-radius:2px}
+
+/* כרטיסי תוכן */
+.s-card {
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r);margin-bottom:18px;overflow:hidden;
+  transition:border-color var(--ease);
+}
+.s-card:hover{border-color:#00ff8818}
+
+.s-hdr {
+  display:flex;align-items:center;gap:11px;
+  padding:12px 18px;background:var(--elevated);
+  border-bottom:1px solid var(--border);
+  flex-direction:row-reverse;
+}
+
+.s-icon{width:28px;height:28px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.theory .s-icon{background:var(--nc-dim);border:1px solid #00d4ff25}
+.handson .s-icon{background:var(--ng-dim);border:1px solid #00ff8825}
+.install .s-icon{background:var(--np-dim);border:1px solid #a855f725}
+.tip-box .s-icon{background:var(--ny-dim);border:1px solid #fbbf2425}
+
+.s-title{font-family:var(--ui);font-size:13px;font-weight:700;letter-spacing:0.5px;flex:1;text-align:right}
+.theory .s-title{color:var(--nc)} .handson .s-title{color:var(--ng)} .install .s-title{color:var(--np)} .tip-box .s-title{color:var(--ny)}
+
+.s-body{padding:18px;text-align:right}
+.s-body p{font-size:14px;color:var(--t2);line-height:1.9;margin-bottom:12px}
+.s-body p:last-of-type{margin-bottom:0}
+.s-body strong{color:var(--t1)}
+.s-body h4{font-family:var(--ui);font-size:11px;color:var(--nc);letter-spacing:1px;margin:16px 0 8px;font-weight:700}
+.s-body ul{list-style:none;padding:0;margin-bottom:10px}
+.s-body ul li{font-size:14px;color:var(--t2);padding:3px 18px 3px 0;position:relative;line-height:1.8}
+.s-body ul li::before{content:'◂';position:absolute;right:0;color:var(--ng);font-size:9px;top:7px}
+
+/* בלוקי קוד */
+.cmd-block {
+  background:var(--void);border:1px solid var(--border);
+  border-radius:var(--r);margin:10px 0;overflow:hidden;
+  direction:ltr;
+}
+
+.cmd-hdr {
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 13px;background:var(--elevated);border-bottom:1px solid var(--border);
+  direction:ltr;
+}
+
+.cmd-label {
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  color:var(--t3);text-transform:uppercase;display:flex;align-items:center;gap:7px;
+}
+.cmd-label::before{content:'';display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ng);box-shadow:0 0 5px var(--ng)}
+
+.copy-btn {
+  font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--t3);background:transparent;border:1px solid var(--border);
+  padding:2px 9px;border-radius:2px;cursor:pointer;transition:all var(--ease);
+}
+.copy-btn:hover{color:var(--ng);border-color:var(--ng);box-shadow:0 0 8px #00ff8825}
+.copy-btn.copied{color:var(--ng);border-color:var(--ng);background:var(--ng-dim)}
+
+.cmd-body{padding:13px 15px;overflow-x:auto;direction:ltr}
+.cmd-body code{font-family:var(--mono);font-size:12.5px;color:var(--ng);display:block;white-space:pre;line-height:1.9;text-align:left}
+.cmd-body code .cm{color:var(--t3);font-style:italic}
+.cmd-body code .fl{color:var(--nc)}
+.cmd-body code .ar{color:var(--ny)}
+.cmd-body code .out{color:var(--t2)}
+.cmd-body code .kw{color:var(--np)}
+
+/* תיבות מידע */
+.info-box {
+  padding:12px 14px;border-radius:var(--r);margin:12px 0;
+  font-size:13px;line-height:1.8;display:flex;gap:10px;
+  flex-direction:row-reverse;text-align:right;
+}
+.info-box .ib-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.info-box.tip{background:var(--nc-dim);border:1px solid #00d4ff20;color:#7dd3e8}
+.info-box.warn{background:var(--ny-dim);border:1px solid #fbbf2420;color:#c4a535}
+.info-box.danger{background:var(--nr-dim);border:1px solid #ff336620;color:#d47a7a}
+.info-box.success{background:var(--ng-dim);border:1px solid #00ff8820;color:#6dcf95}
+
+/* מחסום ידע / חידון */
+.checkpoint-wrap {
+  background:var(--surface);border:1px solid #fbbf2420;
+  border-radius:var(--r);overflow:hidden;margin-bottom:18px;
+}
+.checkpoint-wrap .s-hdr{background:var(--elevated)}
+.checkpoint-wrap .s-title{color:var(--ny)}
+
+.quiz-q{font-size:14px;color:var(--t1);font-weight:600;margin-bottom:14px;line-height:1.7;text-align:right}
+
+.quiz-opts{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+
+.qopt {
+  display:flex;align-items:center;gap:11px;
+  padding:10px 14px;background:var(--elevated);border:1px solid var(--border);
+  border-radius:var(--r);cursor:pointer;transition:all var(--ease);
+  font-size:13px;color:var(--t2);user-select:none;
+  flex-direction:row-reverse;text-align:right;
+}
+.qopt:hover{border-color:var(--ny);color:var(--t1);background:var(--hover)}
+.qopt.sel{border-color:var(--ny);background:var(--ny-dim);color:var(--t1)}
+.qopt.right{border-color:var(--ng);background:var(--ng-dim);color:var(--ng)}
+.qopt.wrong{border-color:var(--nr);background:var(--nr-dim);color:var(--nr)}
+
+.qletter {
+  width:21px;height:21px;border-radius:2px;background:var(--void);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:10px;font-weight:700;flex-shrink:0;
+}
+
+.quiz-submit{
+  font-family:var(--ui);font-size:12px;font-weight:700;letter-spacing:1px;
+  padding:9px 20px;background:transparent;
+  border:1px solid var(--ny);color:var(--ny);border-radius:2px;cursor:pointer;transition:all var(--ease);
+}
+.quiz-submit:hover{background:var(--ny-dim);box-shadow:0 0 15px #fbbf2425}
+.quiz-submit:disabled{opacity:0.25;cursor:not-allowed}
+
+.quiz-fb {
+  margin-top:11px;padding:10px 13px;border-radius:var(--r);
+  font-size:13px;display:none;line-height:1.6;text-align:right;
+}
+.quiz-fb.right{background:var(--ng-dim);border:1px solid #00ff8830;color:var(--ng);display:block}
+.quiz-fb.wrong{background:var(--nr-dim);border:1px solid #ff336630;color:var(--nr);display:block}
+
+/* רשימת משימות */
+.task-list{background:var(--elevated);border:1px solid var(--border);border-radius:var(--r);padding:13px;margin-top:10px}
+.task-list-label{font-family:var(--ui);font-size:10px;text-transform:uppercase;color:var(--ny);margin-bottom:9px;font-weight:700;text-align:right}
+.tasks{display:flex;flex-direction:column;gap:5px}
+
+.task-item {
+  display:flex;align-items:center;gap:9px;cursor:pointer;padding:5px 0;
+  transition:color var(--ease);font-size:13px;color:var(--t2);user-select:none;
+  flex-direction:row-reverse;text-align:right;
+}
+.task-item:hover{color:var(--t1)}
+.task-cb {
+  width:16px;height:16px;border:1px solid var(--border);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;color:transparent;transition:all var(--ease);flex-shrink:0;
+}
+.task-item.done .task-cb{background:var(--ng-dim);border-color:var(--ng);color:var(--ng)}
+.task-item.done{color:var(--t3);text-decoration:line-through}
+
+/* כפתור סיום */
+.complete-btn {
+  margin-top:28px;width:100%;padding:13px;
+  font-family:var(--ui);font-size:13px;font-weight:700;letter-spacing:1px;
+  background:transparent;border:1px solid var(--ng);color:var(--ng);border-radius:3px;
+  cursor:pointer;transition:all var(--ease);display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.complete-btn:hover{background:var(--ng-dim);box-shadow:var(--ng-glow);transform:translateY(-1px)}
+.complete-btn.done{background:var(--ng-dim);box-shadow:var(--ng-glow);pointer-events:none}
+
+/* ניווט */
+.nav-row{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:24px;flex-wrap:wrap;gap:8px;flex-direction:row-reverse}
+.nav-btn{font-family:var(--ui);font-size:11px;font-weight:600;padding:5px 13px;background:transparent;border:1px solid var(--border);color:var(--t3);border-radius:2px;cursor:pointer;transition:all var(--ease)}
+.nav-btn:hover:not(:disabled){color:var(--ng);border-color:var(--ng)}
+.nav-btn:disabled{opacity:0.2;cursor:not-allowed}
+.nav-btn.nxt{color:var(--ng);border-color:var(--ng)}
+.nav-btn.nxt:hover{background:var(--ng-dim);box-shadow:0 0 12px #00ff8835}
+
+/* מסך פתיחה */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;gap:26px;animation:fadein 0.5s ease}
+
+.w-ascii{font-family:var(--mono);font-size:10px;color:var(--ng);opacity:0.4;line-height:1.4;white-space:pre;text-shadow:0 0 10px var(--ng);direction:ltr}
+
+.w-title{font-family:var(--ui);font-size:clamp(26px,4vw,48px);font-weight:900;color:var(--t1);line-height:1.1}
+.w-title em{color:var(--ng);font-style:normal;text-shadow:0 0 20px var(--ng)}
+.w-sub{font-family:var(--ui);font-size:13px;color:var(--t3);max-width:440px;font-weight:500;line-height:1.7}
+
+.w-stats{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.w-stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 22px;text-align:center;transition:all var(--ease)}
+.w-stat:hover{border-color:var(--border-bright);box-shadow:0 0 20px #00ff8808}
+.w-stat-n{font-family:var(--display);font-size:24px;font-weight:700;color:var(--ng)}
+.w-stat-l{font-family:var(--ui);font-size:10px;color:var(--t3);margin-top:3px;font-weight:600}
+
+.w-btn{font-family:var(--ui);font-size:14px;font-weight:700;color:var(--void);background:var(--ng);border:none;padding:13px 36px;border-radius:3px;cursor:pointer;transition:all var(--ease);box-shadow:0 0 30px #00ff8840}
+.w-btn:hover{background:#00ffaa;box-shadow:0 0 50px #00ff8870;transform:translateY(-2px)}
+
+.ic{font-family:var(--mono);background:var(--elevated);border:1px solid var(--border);border-radius:2px;padding:1px 5px;font-size:12px;color:var(--nc);direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- כותרת עליונה -->
+  <header id="hdr">
+    <div class="logo" onclick="showWelcome()">
+      <div class="logo-box">&gt;_</div>
+      <div>
+        <div class="logo-text">סייבר//לינוקס</div>
+        <div class="logo-sub">LEARNING TERMINAL v2.0</div>
+      </div>
+    </div>
+
+    <div class="hdr-progress">
+      <span class="hdr-progress-label">התקדמות</span>
+      <div class="progress-track"><div class="progress-fill" id="progFill"></div></div>
+      <span class="progress-pct" id="progPct">0%</span>
+    </div>
+
+    <div class="hdr-right">
+      <span class="completed-counter">מודולים: <span id="doneCount">0</span>/16</span>
+      <span class="online-badge">WSL READY</span>
+    </div>
+  </header>
+
+  <!-- תוכן ראשי -->
+  <main id="main">
+    <div id="content"></div>
+  </main>
+
+  <!-- סרגל צד -->
+  <nav id="sb"></nav>
+</div>
+
+<script>
+// ============================================================
+// נתוני תכנית הלימודים
+// ============================================================
+const CURRICULUM = [
+  {
+    id:'intro', num:'00', cls:'l1', color:'ng', title:'מבוא', sub:'הגדרת WSL 2',
+    lessons:[
+      {
+        id:'wsl-setup', title:'הפעלת WSL 2 על Windows', lvlLabel:'מבוא', difficulty:'מתחיל', duration:'20 דקות',
+        desc:'הפוך את מחשב ה-Windows שלך למכונת לינוקס אמיתית. WSL 2 מספק תאימות מלאה לקריאות מערכת, תמיכה ב-Docker וביצועים הזהים כמעט ל-Linux נייטיב — הכל מבלי לעזוב את Windows.',
+        theory:{
+          icon:'⚙️', title:'מה זה WSL 2?',
+          body:`<p><strong>Windows Subsystem for Linux 2</strong> מריץ גרעין לינוקס אמיתי בתוך מכונה וירטואלית קלה מסוג Hyper-V. בניגוד ל-WSL 1 שתירגם קריאות מערכת, ל-WSL 2 יש תאימות מלאה לגרעין — כלומר כלים כמו <span class="ic">nmap</span>, <span class="ic">metasploit</span> ו-<span class="ic">wireshark</span> עובדים באופן ילידי.</p>
+<p><strong>למה זה חשוב לאבטחה:</strong> רוב כלי האבטחה ההתקפית והגנתית הם ילידי לינוקס. WSL 2 מאפשר לך ללמוד ולתרגל טכניקות בדיקות חדירות אמיתיות ישירות משולחן העבודה של Windows — ללא VM נפרד.</p>
+<h4>ארכיטקטורת WSL 2</h4>
+<ul>
+<li>גרעין לינוקס אמיתי (מתעדכן דרך Windows Update)</li>
+<li>תאימות מלאה לקריאות מערכת</li>
+<li>גישה לקבצי Windows בנתיב <span class="ic">/mnt/c/</span></li>
+<li>הפעלת אפליקציות Linux גרפיות עם WSLg (Windows 11)</li>
+</ul>`
+        },
+        install:{
+          icon:'📦', title:'התקנה',
+          body:`<p>פתח <strong>PowerShell כמנהל מערכת</strong> והרץ את הפקודות הבאות לפי הסדר:</p>`,
+          commands:[
+            {label:'PowerShell (Admin)', code:`# שלב 1: הפעל WSL\nwsl --install\n\n# שלב 2: קבע WSL 2 כברירת מחדל\nwsl --set-default-version 2\n\n# שלב 3: התקן Ubuntu\nwsl --install -d Ubuntu\n\n# שלב 4: אמת התקנה\nwsl --list --verbose`},
+            {label:'פלט צפוי', code:`<span class="out">  NAME      STATE           VERSION\n* Ubuntu    Running         2</span>`}
+          ],
+          after:`<div class="info-box warn"><span class="ib-icon">⚠️</span> ייתכן שתידרש הפעלה מחדש לאחר ההתקנה הראשונה. אם מוצגת גרסה 1, הרץ <span class="ic">wsl --set-version Ubuntu 2</span> לאחר האתחול.</div>`
+        },
+        handson:{
+          icon:'💻', title:'הפקודות הראשונות ב-WSL',
+          body:`<p>לאחר ההגדרה, הפעל את Ubuntu מתפריט Start. תקבל <strong>פרומפט bash</strong>. הרץ את הפקודות האלה כדי להתמצא:</p>`,
+          commands:[
+            {label:'bash — טרמינל WSL', code:`# מי אתה?\nwhoami\n\n# איזו גרסת לינוקס זו?\nuname -a\n\n# היכן אתה נמצא במערכת הקבצים?\npwd\n\n# ראה את כונן C של Windows מלינוקס\nls /mnt/c/Users/\n\n# עדכן רשימות חבילות (עשה זאת תחילה!)\nsudo apt update && sudo apt upgrade -y`}
+          ]
+        },
+        checkpoint:{
+          question:'איזו גרסת WSL משתמשת בגרעין לינוקס אמיתי (לא תרגום קריאות מערכת)?',
+          opts:['WSL 1','WSL 2','WSL Pro','שתי הגרסאות'],
+          answer:1,
+          explanation:'✓ נכון! WSL 2 כולל גרעין לינוקס אמיתי הרץ במכונה וירטואלית קלה, המעניק תאימות מלאה לקריאות מערכת. WSL 1 השתמש בשכבת תרגום.'
+        },
+        tasks:['הרצתי wsl --install בהצלחה','הפעלתי טרמינל Ubuntu','הרצתי sudo apt update ללא שגיאות','אישרתי שגרסת WSL היא 2 עם wsl --list --verbose']
+      }
+    ]
+  },
+  {
+    id:'l1', num:'01', cls:'l1', color:'ng', title:'רמה 1 — יסודות', sub:'ניווט וקבצים',
+    lessons:[
+      {
+        id:'navigation', title:'ניווט בטרמינל', lvlLabel:'רמה 1 — יסודות', difficulty:'מתחיל', duration:'25 דקות',
+        desc:'הטרמינל הוא הנשק העיקרי שלך. שלוט בניווט ותשלוט בכל מערכת לינוקס — מהמחשב שלך ועד שרת מרוחק שאליו קיבלת גישה.',
+        theory:{
+          icon:'🗺️', title:'מערכת הקבצים של לינוקס',
+          body:`<p>לינוקס משתמשת ב<strong>מערכת קבצים היררכית בשורש יחיד</strong>. הכל — כוננים, התקנים, תהליכים — הוא קובץ איפשהו מתחת ל-<span class="ic">/</span>. בניגוד ל-Windows עם אותיות כוננים (C:, D:), לינוקס מרכיבה הכל לעץ אחד.</p>
+<h4>תיקיות קריטיות</h4>
+<ul>
+<li><span class="ic">/</span> — שורש מערכת הקבצים כולה</li>
+<li><span class="ic">/home/username</span> — הקבצים האישיים שלך (כינוי: <span class="ic">~</span>)</li>
+<li><span class="ic">/etc</span> — קבצי תצורה של המערכת (מכרה זהב לסיור)</li>
+<li><span class="ic">/var/log</span> — לוגים של המערכת (חיוני לפורנזיקה)</li>
+<li><span class="ic">/bin</span> ו-<span class="ic">/usr/bin</span> — תוכניות הפעלה</li>
+<li><span class="ic">/tmp</span> — קבצים זמניים, נגיש לכולם (וקטור תקיפה נפוץ)</li>
+<li><span class="ic">/proc</span> — מערכת קבצים וירטואלית החושפת מידע על גרעין ותהליכים</li>
+</ul>
+<p><strong>הערת אבטחה:</strong> הבנת מערכת הקבצים מאפשרת לך לדעת בדיוק היכן תוקפים מסתירים קבצים, היכן מאוחסנות הרשאות, ואילו תיקיות לבדוק.</p>`
+        },
+        handson:{
+          icon:'💻', title:'פקודות ניווט',
+          body:`<p>אלו הפקודות שתשתמש בהן <em>בכל סשן</em>. חרט אותן בזיכרון השרירים שלך.</p>`,
+          commands:[
+            {label:'bash — ניווט', code:`# הדפס ספרייה נוכחית — איפה אני?\npwd\n<span class="out">/home/yourname</span>\n\n# רשום תוכן ספרייה\nls                    <span class="cm"># רשימה בסיסית</span>\nls <span class="fl">-la</span>               <span class="cm"># פורמט ארוך, כולל קבצים מוסתרים</span>\nls <span class="fl">-lh</span>               <span class="cm"># גדלי קבצים קריאים לאדם</span>\nls <span class="fl">--color=auto</span> /etc  <span class="cm"># הצג /etc עם צבעים</span>\n\n# שנה ספרייה\ncd /etc               <span class="cm"># נתיב מוחלט</span>\ncd Documents          <span class="cm"># נתיב יחסי</span>\ncd ..                 <span class="cm"># עלה רמה אחת</span>\ncd ~                  <span class="cm"># חזור הביתה</span>\ncd -                  <span class="cm"># חזור לספרייה הקודמת</span>`},
+            {label:'bash — סיור במערכת', code:`# מה יש בקובץ?\ncat /etc/hostname     <span class="cm"># הדפס תוכן קובץ</span>\nless /etc/passwd      <span class="cm"># דפדף (q ליציאה)</span>\nhead <span class="fl">-20</span> /etc/passwd  <span class="cm"># 20 שורות ראשונות</span>\ntail <span class="fl">-10</span> /var/log/syslog <span class="cm"># 10 שורות אחרונות של לוג</span>\n\n# מצא את דרכך\nwhich bash            <span class="cm"># אתר תוכנית</span>\nfind /home <span class="fl">-name</span> <span class="ar">"*.txt"</span>  <span class="cm"># חפש קבצים</span>\ntree /etc <span class="fl">-L</span> <span class="ar">2</span>        <span class="cm"># עץ ספריות ויזואלי</span>`}
+          ]
+        },
+        install:{icon:'📦',title:'התקן כלים שימושיים',body:`<p>שדרג את ערכת הניווט שלך:</p>`,
+          commands:[{label:'bash',code:`sudo apt install tree bat exa -y\n<span class="cm"># tree  — עץ ספריות ויזואלי\n# bat   — cat עם הדגשת תחביר\n# exa   — תחליף מודרני ל-ls</span>`}]
+        },
+        checkpoint:{
+          question:'איזו תיקייה מכילה קבצי תצורה של המערכת ומהווה יעד עיקרי במהלך העלאת הרשאות?',
+          opts:['/home','/etc','/bin','/tmp'],
+          answer:1,
+          explanation:'✓ נכון! /etc מחזיקה קבצי תצורה כמו /etc/passwd (חשבונות משתמשים), /etc/shadow (גיבובי סיסמאות), /etc/sudoers (כללי sudo) — כולם יעדי אבטחה קריטיים.'
+        },
+        tasks:['השתמשתי ב-ls -la כדי לראות קבצים מוסתרים','ניווטתי ל-/etc וקראתי /etc/hostname','השתמשתי ב-find כדי לאתר קובץ','בדקתי tail -10 /var/log/syslog']
+      },
+      {
+        id:'file-ops', title:'פעולות קבצים', lvlLabel:'רמה 1 — יסודות', difficulty:'מתחיל', duration:'30 דקות',
+        desc:'יצירה, העברה, העתקה ומחיקת קבצים הם יסוד לניהול מערכות ולאבטחה כאחד. תוקף שפורץ למערכת זקוק למיומנויות אלה כדי להטמיע קבצים, לגנוב מידע ולמחוק עקבות.',
+        theory:{
+          icon:'📁', title:'קבצים כמשטח תקיפה',
+          body:`<p>בלינוקס, <strong>"הכל הוא קובץ"</strong> — מנהלי התקנים, שקעי רשת, תהליכים. שליטה בפעולות קבצים נותנת כוח:</p>
+<ul>
+<li><strong>צד ניהולי:</strong> פריסת תצורות, ניהול גיבויים, ארגון ראיות</li>
+<li><strong>צד התקפי:</strong> הטמעת עומסים, גניבת מידע, שינוי קבצי תצורה</li>
+<li><strong>צד פורנזי:</strong> שחזור קבצים שנמחקו, ניתוח חותמות זמן, בדיקת מטא-דאטה</li>
+</ul>
+<p><strong>חותמות זמן חשובות בפורנזיקה.</strong> לכל קובץ יש שלוש: <span class="ic">atime</span> (גישה), <span class="ic">mtime</span> (שינוי), <span class="ic">ctime</span> (שינוי מטא-דאטה). תוקפים משתמשים ב-<span class="ic">touch -t</span> כדי לזייף אותן ולהסתיר פעילות.</p>`
+        },
+        handson:{
+          icon:'💻', title:'פעולות קבצים',
+          body:`<p>תרגל פקודות אלה בתיקיית הבית שלך ב-WSL (<span class="ic">cd ~</span> תחילה):</p>`,
+          commands:[
+            {label:'bash — יצירה', code:`# צור קבצים וספריות\ntouch secret.txt           <span class="cm"># צור קובץ ריק</span>\ntouch file{1..5}.txt       <span class="cm"># צור file1.txt עד file5.txt</span>\nmkdir loot                 <span class="cm"># צור ספרייה</span>\nmkdir <span class="fl">-p</span> ops/recon/2024   <span class="cm"># צור ספריות מקוננות</span>\necho "test data" > data.txt <span class="cm"># צור קובץ עם תוכן</span>\necho "more" >> data.txt     <span class="cm"># הוסף לקובץ קיים</span>`},
+            {label:'bash — העתקה והעברה', code:`# העתק קבצים\ncp data.txt backup.txt             <span class="cm"># העתק קובץ</span>\ncp <span class="fl">-r</span> ops/ ops-backup/             <span class="cm"># העתק ספרייה רקורסיבית</span>\ncp <span class="fl">-p</span> data.txt preserved.txt       <span class="cm"># שמור חותמות זמן</span>\n\n# הזז / שנה שם\nmv data.txt loot/data.txt          <span class="cm"># הזז קובץ</span>\nmv secret.txt classified.txt      <span class="cm"># שנה שם קובץ</span>`},
+            {label:'bash — מחיקה', code:`# הסר קבצים (היזהר!)\nrm file1.txt                <span class="cm"># מחק קובץ</span>\nrm <span class="fl">-rf</span> loot/               <span class="cm"># מחק ספרייה (מסוכן — אין סל מחזור!)</span>\nrm <span class="fl">-i</span> *.txt                <span class="cm"># אינטראקטיבי, שואל לפני כל מחיקה</span>\n\n# מחיקה מאובטחת (덧쓰기)\nshred <span class="fl">-vzn</span> <span class="ar">3</span> classified.txt  <span class="cm"># 3 מעברי덧쓰기 + מחיקה</span>`},
+          ],
+          after:`<div class="info-box danger"><span class="ib-icon">⛔</span> <strong>ל-rm -rf אין ביטול.</strong> בניגוד לסל המחזור של Windows, קבצים שנמחקו בלינוקס — נעלמים לצמיתות. תמיד בדוק שוב לפני הרצת rm -rf.</div>`
+        },
+        checkpoint:{
+          question:'חוקר פורנזי מבחין שה-mtime של קובץ הוא מהעבר אך ה-ctime הוא עדכני. מה קרה כנראה?',
+          opts:['הקובץ לא שונה מעולם','תוקף השתמש ב-touch כדי לזייף את חותמת זמן השינוי','הקובץ דוחס','מערכת הקבצים פגומה'],
+          answer:1,
+          explanation:'✓ נכון! ניתן לזייף mtime עם touch -t. אך ctime (זמן שינוי inode) מתעדכן בעת שינוי מטא-דאטה ולא ניתן לשנותו עם touch — מחוון פורנזי מרכזי.'
+        },
+        tasks:['יצרתי מבנה ספריות עם mkdir -p','השתמשתי ב-touch ליצירת מספר קבצים בו-זמנית','העתקתי קובץ תוך שמירת חותמות זמן עם cp -p','הוספתי לקובץ בעזרת >>']
+      }
+    ]
+  },
+  {
+    id:'l2', num:'02', cls:'l2', color:'nc', title:'רמה 2 — הרשאות', sub:'משתמשים ובקרת גישה',
+    lessons:[
+      {
+        id:'sudo-users', title:'sudo וניהול משתמשים', lvlLabel:'רמה 2 — הרשאות', difficulty:'בינוני', duration:'25 דקות',
+        desc:'העלאת הרשאות היא אחת מטכניקות התקיפה הנפוצות ביותר. הבנת sudo ומשתמשים חיונית — הן לניצול תצורות שגויות והן להגנה מפניהן.',
+        theory:{
+          icon:'👤', title:'מודל ההרשאות של יוניקס',
+          body:`<p>כל תהליך לינוקס רץ כמשתמש. משתמש <strong>root</strong> (UID 0) בעל גישה בלתי מוגבלת. כל שאר המשתמשים מוגבלים. <span class="ic">sudo</span> מאפשר למשתמשים מסוימים להריץ פקודות עם הרשאות root ללא שיתוף סיסמת root.</p>
+<h4>למה זה חשוב לאבטחה</h4>
+<ul>
+<li><strong>העלאת הרשאות:</strong> תוקפים מנצלים תצורות sudo שגויות (רשומות NOPASSWD, פקודות עם wildcard) כדי להשיג root</li>
+<li><strong>עיקרון הרשאה מינימלית:</strong> שירותים צריכים לרוץ כמשתמשים עם הרשאות נמוכות</li>
+<li><strong>נתיב ביקורת:</strong> sudo מתעד את כל הפקודות ב-<span class="ic">/var/log/auth.log</span></li>
+</ul>`
+        },
+        handson:{
+          icon:'💻', title:'פקודות משתמשים ו-sudo',
+          body:`<p>חקור את מערכת המשתמשים בסביבת WSL שלך:</p>`,
+          commands:[
+            {label:'bash — משתמשים וקבוצות', code:`# מידע על המשתמש הנוכחי\nid                      <span class="cm"># UID, GID, קבוצות</span>\nwhoami                  <span class="cm"># שם המשתמש בלבד</span>\ngroups                  <span class="cm"># כל הקבוצות שאתה חבר בהן</span>\n\n# בסיס נתוני משתמשים\ncat /etc/passwd         <span class="cm"># כל המשתמשים</span>\ncat /etc/group          <span class="cm"># כל הקבוצות</span>\n\n# שימוש ב-sudo\nsudo whoami             <span class="cm"># הרץ כ-root</span>\nsudo <span class="fl">-l</span>               <span class="cm"># רשום הרשאות sudo שלך (קריטי לבדיקת העלאת הרשאות)</span>\nsudo <span class="fl">-u</span> <span class="ar">www-data</span> id   <span class="cm"># הרץ פקודה כמשתמש ספציפי</span>`},
+            {label:'bash — ניהול משתמשים (דורש sudo)', code:`# צור/מחק משתמשים\nsudo useradd <span class="fl">-m</span> <span class="fl">-s</span> /bin/bash testuser   <span class="cm"># צור משתמש עם תיקיית בית</span>\nsudo passwd testuser                  <span class="cm"># קבע סיסמה</span>\nsudo userdel <span class="fl">-r</span> testuser              <span class="cm"># מחק משתמש ותיקיית הבית שלו</span>\n\n# שנה גישת sudo\nsudo visudo                  <span class="cm"># ערוך /etc/sudoers בבטחה</span>\n\n<span class="cm"># חפש תצורות sudo מסוכנות (ציד העלאת הרשאות):</span>\nsudo <span class="fl">-l</span> | grep NOPASSWD   <span class="cm"># ללא סיסמה — מסוכן!</span>`}
+          ]
+        },
+        checkpoint:{
+          question:'הרצת "sudo -l" ורואה "(ALL) NOPASSWD: /usr/bin/find". למה זה סיכון אבטחה קריטי?',
+          opts:['find איטי על דיסקים גדולים','find יכול להפעיל shell עם sudo, מעניק גישת root ללא סיסמה','find מוחק קבצים','find צורך יותר מדי CPU'],
+          answer:1,
+          explanation:'✓ נכון! הפקודה find -exec /bin/bash \\; תפעיל bash כ-root. תוכניות רבות המותרות דרך sudo NOPASSWD יכולות להפעיל shell — זוהי טכניקת העלאת הרשאות קלאסית מ-GTFOBins.'
+        },
+        tasks:['הרצתי id והבנתי את הפלט','בדקתי sudo -l להרשאות שלי','קראתי /etc/passwd וזיהיתי משתמשי מערכת לעומת אנושיים','הרצתי sudo -u להפעלה כמשתמש אחר']
+      },
+      {
+        id:'chmod-chown', title:'chmod ו-chown — הרשאות', lvlLabel:'רמה 2 — הרשאות', difficulty:'בינוני', duration:'30 דקות',
+        desc:'הרשאות קבצים שולטות מי יכול לקרוא, לכתוב, או להפעיל כל קובץ במערכת. תצורות שגויות אחראיות לפרצות אינסופיות — קבצי תצורה נגישים לכולם, בינאריות SUID, מפתחות פרטיים חשופים.',
+        theory:{
+          icon:'🔒', title:'הבנת ביטי הרשאה',
+          body:`<p>לכל קובץ יש הרשאות עבור שלוש קבוצות: <strong>בעלים (u)</strong>, <strong>קבוצה (g)</strong>, <strong>אחרים (o)</strong>. לכל קבוצה שלושה ביטים: <strong>קריאה (r=4)</strong>, <strong>כתיבה (w=2)</strong>, <strong>הפעלה (x=1)</strong>.</p>
+<p>הרצת <span class="ic">ls -la</span> מציגה: <span class="ic">-rwxr-xr--</span> — בעלים יכול rwx, קבוצה יכולה r-x, אחרים יכולים r--.</p>
+<h4>תבניות הרשאה מסוכנות</h4>
+<ul>
+<li><span class="ic">777</span> — כתיב לכולם: כל אחד יכול לשנות, סיכון עצום</li>
+<li><span class="ic">ביט SUID (4xxx)</span> — מופעל עם הרשאות הבעלים (לרוב root). חפש עם: <span class="ic">find / -perm -4000</span></li>
+<li><span class="ic">ביט SGID (2xxx)</span> — מופעל עם הרשאות הקבוצה</li>
+<li>מפתחות פרטיים עם <span class="ic">644</span> — צריכים להיות <span class="ic">600</span></li>
+</ul>`
+        },
+        handson:{
+          icon:'💻', title:'פקודות chmod ו-chown',
+          commands:[
+            {label:'bash — קריאת הרשאות', code:`# קרא את מחרוזת ההרשאות\nls <span class="fl">-la</span> /etc/passwd\n<span class="out">-rw-r--r-- 1 root root 2847 Jan 15 10:23 /etc/passwd</span>\n<span class="cm"># ^--- -rw-r--r-- = בעלים:rw, קבוצה:r, אחרים:r</span>\n\n# פורמט אוקטלי:\n<span class="cm"># 7 = rwx (4+2+1)   6 = rw-   5 = r-x   4 = r--</span>\n<span class="cm"># 755 = rwxr-xr-x  644 = rw-r--r--  600 = rw-------</span>\n\n# מצא הרשאות מסוכנות (ביקורת אבטחה)\nfind / <span class="fl">-perm</span> <span class="ar">-4000</span> 2>/dev/null  <span class="cm"># מצא בינאריות SUID</span>\nfind / <span class="fl">-perm</span> <span class="ar">-2000</span> 2>/dev/null  <span class="cm"># מצא בינאריות SGID</span>\nfind / <span class="fl">-perm</span> <span class="ar">777</span>  2>/dev/null   <span class="cm"># מצא קבצים כתיבים לכולם</span>`},
+            {label:'bash — שינוי הרשאות', code:`# chmod — שנה ביטי מצב קובץ\nchmod <span class="ar">755</span> script.sh        <span class="cm"># rwxr-xr-x (קובץ הפעלה סטנדרטי)</span>\nchmod <span class="ar">600</span> ~/.ssh/id_rsa    <span class="cm"># rw------- (נדרש למפתחות SSH פרטיים)</span>\nchmod <span class="ar">644</span> config.txt       <span class="cm"># rw-r--r-- (קובץ תצורה סטנדרטי)</span>\nchmod <span class="fl">+x</span> script.sh         <span class="cm"># הוסף הרשאת הפעלה לכולם</span>\nchmod <span class="fl">-w</span> important.txt     <span class="cm"># הסר כתיבה לכולם</span>\nchmod <span class="fl">o-r</span> private.txt      <span class="cm"># הסר קריאה מאחרים</span>\n\n# chown — שנה בעלים\nsudo chown root:root /etc/myconfig    <span class="cm"># קבע בעלים וקבוצה</span>\nsudo chown <span class="fl">-R</span> ubuntu:ubuntu ~/project  <span class="cm"># שנה בעלות רקורסיבית</span>`}
+          ]
+        },
+        checkpoint:{
+          question:'לקובץ מפתח SSH פרטי יש הרשאות 644 (-rw-r--r--). מה הסיכון האבטחתי?',
+          opts:['אין סיכון, 644 הוא סטנדרטי','משתמשים אחרים במערכת יכולים לקרוא את המפתח הפרטי שלך, מסכן את כל השרתים שהוא פותח','הקובץ לא יכול לשמש את SSH','הקובץ יימחק אוטומטית'],
+          answer:1,
+          explanation:'✓ נכון! מפתחות SSH פרטיים חייבים להיות 600 (קריאה/כתיבה לבעלים בלבד). SSH יסרב להשתמש במפתח עם הרשאות פתוחות מדי, ויציג: "WARNING: UNPROTECTED PRIVATE KEY FILE!"'
+        },
+        tasks:['הרצתי ls -la ופירשתי את מחרוזת ההרשאות','השתמשתי ב-chmod 600 על קובץ בדיקה','מצאתי בינאריות SUID עם find / -perm -4000','שיניתי בעלות קובץ עם chown']
+      }
+    ]
+  },
+  {
+    id:'l3', num:'03', cls:'l3', color:'nc', title:'רמה 3 — רשתות', sub:'כלים ופרוטוקולים',
+    lessons:[
+      {
+        id:'network-basics', title:'כלי סיור ברשת', lvlLabel:'רמה 3 — רשתות', difficulty:'בינוני', duration:'35 דקות',
+        desc:'הרשתות הן שדה הקרב. לפני תקיפה או הגנה, עליך להבין מה קיים ברשת, אילו פורטים פתוחים, וכיצד זורם התעבורה. כלים אלה מהווים את הבסיס לכל הערכת אבטחה.',
+        theory:{
+          icon:'🌐', title:'TCP/IP ופורטים',
+          body:`<p>כל שירות רשת קשור ל<strong>פורט</strong> (1–65535). פורטים פתוחים הם נקודות כניסה פוטנציאליות. סורק פורטים כמו <span class="ic">nmap</span> חושף את משטח התקיפה של כל מכונה.</p>
+<h4>פורטים חשובים לדעת</h4>
+<ul>
+<li><span class="ic">22</span> — SSH (מעטפת מרוחקת מאובטחת)</li>
+<li><span class="ic">80/443</span> — HTTP/HTTPS (שרתי אינטרנט)</li>
+<li><span class="ic">21</span> — FTP (לרוב מוגדר שגוי, מאפשר כניסה אנונימית)</li>
+<li><span class="ic">3306</span> — מסד נתוני MySQL</li>
+<li><span class="ic">445</span> — SMB (שיתוף קבצים Windows, יעד של EternalBlue)</li>
+<li><span class="ic">3389</span> — RDP (שולחן עבודה מרוחק Windows)</li>
+</ul>
+<p><strong>עיקרון אבטחה:</strong> כל פורט פתוח הוא פגיעות פוטנציאלית. סגור מה שלא צריך. זה נקרא <strong>הקטנת משטח תקיפה</strong>.</p>`
+        },
+        handson:{
+          icon:'💻', title:'פקודות רשת',
+          commands:[
+            {label:'bash — מידע רשת', code:`# הצג ממשקי רשת וכתובות IP\nip a                    <span class="cm"># פקודה מודרנית</span>\nifconfig                <span class="cm"># קלאסי (התקן: sudo apt install net-tools)</span>\n\n# בדוק קישוריות\nping <span class="fl">-c</span> <span class="ar">4</span> 8.8.8.8      <span class="cm"># שלח 4 מנות ICMP ל-Google DNS</span>\ntraceroute 1.1.1.1     <span class="cm"># עקוב אחרי הנתיב למארח</span>\n\n# שאילתות DNS\nnslookup google.com\ndig google.com\nhost google.com\n\n# בדוק חיבורים פעילים\nss <span class="fl">-tulnp</span>              <span class="cm"># הצג פורטים מאזינים (מחליף netstat)</span>\nnetstat <span class="fl">-tulnp</span>         <span class="cm"># קלאסי\n# דגלים: -t=tcp -u=udp -l=מאזין -n=מספרי -p=תהליך</span>`},
+            {label:'bash — SSH', code:`# SSH — Secure Shell (גישה מרוחקת מוצפנת)\nssh user@192.168.1.100            <span class="cm"># התחבר למארח מרוחק</span>\nssh <span class="fl">-p</span> <span class="ar">2222</span> user@host            <span class="cm"># פורט לא סטנדרטי</span>\nssh <span class="fl">-i</span> ~/.ssh/id_rsa user@host   <span class="cm"># השתמש במפתח ספציפי</span>\n\n# צור מפתחות SSH (מאובטח יותר מסיסמאות)\nssh-keygen <span class="fl">-t</span> <span class="ar">ed25519</span> <span class="fl">-C</span> <span class="ar">"your_email"</span>\nssh-copy-id user@host             <span class="cm"># העבר מפתח ציבורי לשרת</span>\n\n# מנהור SSH\nssh <span class="fl">-L</span> <span class="ar">8080:localhost:80</span> user@host   <span class="cm"># גישה לפורט 80 מרוחק דרך פורט 8080 מקומי</span>`}
+          ]
+        },
+        install:{icon:'📦',title:'התקן כלי רשת',body:`<p>ערכת כלי רשת חיונית ל-WSL:</p>`,
+          commands:[{label:'bash',code:`sudo apt install net-tools iputils-ping traceroute dnsutils nmap curl wget -y\n<span class="cm"># net-tools  — ifconfig, netstat\n# nmap       — סורק פורטים (חיוני!)\n# dnsutils   — dig, nslookup, host\n# curl/wget  — לקוחות HTTP</span>`}]
+        },
+        checkpoint:{
+          question:'הרצת "ss -tulnp" ורואה פורט 3306 מאזין על 0.0.0.0. למה זה סיכון אבטחה?',
+          opts:['3306 הוא פורט גבוה מדי','MySQL מאזין על כל הממשקים, כלומר נגיש מהרשת — צריך להיות 127.0.0.1 בלבד','פורט 3306 איטי','ss אינו כלי אמין'],
+          answer:1,
+          explanation:'✓ נכון! 0.0.0.0 אומר שהשירות מקבל חיבורים מכל ממשק (כולל רשת ציבורית). MySQL צריך להיות קשור ל-127.0.0.1 (localhost בלבד). זוהי תצורה שגויה נפוצה.'
+        },
+        tasks:['השתמשתי ב-ip a כדי למצוא את כתובת ה-IP של WSL שלי','פינגתי 8.8.8.8 וקיבלתי תגובה','הרצתי ss -tulnp וזיהיתי פורטים מאזינים','יצרתי זוג מפתחות SSH עם ssh-keygen']
+      }
+    ]
+  },
+  {
+    id:'l4', num:'04', cls:'l4', color:'nr', title:'רמה 4 — סייבר', sub:'nmap וניתוח לוגים',
+    lessons:[
+      {
+        id:'nmap', title:'סריקת פורטים עם nmap', lvlLabel:'רמה 4 — מבוא לאבטחה התקפית', difficulty:'מתקדם', duration:'40 דקות',
+        desc:'nmap הוא סורק הפורטים הסטנדרטי בתעשייה, בשימוש הן של תוקפים והן של מגנים. הבנתו חיונית — עליך לראות את הרשת שלך כפי שתוקף רואה אותה.',
+        theory:{
+          icon:'🎯', title:'כיצד עובדת סריקת פורטים',
+          body:`<p><strong>nmap</strong> שולח מנות מעוצבות במיוחד ומנתח תגובות כדי לקבוע אילו פורטים פתוחים, אילו שירותים רצים, ולעיתים איזו מערכת הפעלה מותקנת — ללא כניסה כלל.</p>
+<h4>סוגי סריקה</h4>
+<ul>
+<li><strong>סריקת TCP SYN (-sS)</strong> — "חצי פתוחה". שולח SYN, קורא SYN-ACK או RST. סמויה, לא משלימה לחיצת יד</li>
+<li><strong>TCP Connect (-sT)</strong> — לחיצת יד מלאה. מתועדת ביעד. נדרשת כשסריקת SYN מחייבת root</li>
+<li><strong>סריקת UDP (-sU)</strong> — איטית יותר. מוצאת שירותי DNS, SNMP, DHCP</li>
+<li><strong>זיהוי גרסאות (-sV)</strong> — מזהה גרסאות שירות (Apache 2.4.29, OpenSSH 8.2 וכו')</li>
+</ul>
+<div class="info-box warn"><span class="ib-icon">⚠️</span> <strong>אזהרה משפטית:</strong> סרוק רק מערכות שבבעלותך או שיש לך אישור כתוב מפורש לבדוק אותן. סריקת פורטים לא מורשית אסורה חוקית במדינות רבות.</div>`
+        },
+        install:{icon:'📦',title:'התקן nmap',body:``,
+          commands:[{label:'bash',code:`sudo apt install nmap -y\nnmap --version\n<span class="out">Nmap version 7.93 ( https://nmap.org )</span>`}]
+        },
+        handson:{
+          icon:'💻', title:'טכניקות סריקה עם nmap',
+          commands:[
+            {label:'bash — סריקות בסיסיות', code:`# סרוק את המכונה שלך ב-WSL (תמיד חוקי)\nnmap localhost\nnmap 127.0.0.1\n\n# סרוק מארח ספציפי\nnmap <span class="ar">192.168.1.1</span>             <span class="cm"># הראוטר שלך</span>\n\n# דגלי סריקה נפוצים\nnmap <span class="fl">-sV</span> <span class="ar">127.0.0.1</span>          <span class="cm"># זיהוי גרסאות</span>\nnmap <span class="fl">-sV -sC</span> <span class="ar">127.0.0.1</span>      <span class="cm"># גרסאות + סקריפטים ברירת מחדל</span>\nnmap <span class="fl">-p</span> <span class="ar">80,443,22</span> <span class="ar">target</span>    <span class="cm"># פורטים ספציפיים בלבד</span>\nnmap <span class="fl">-p-</span> <span class="ar">target</span>              <span class="cm"># כל 65535 הפורטים (איטי!)</span>\nnmap <span class="fl">-O</span> <span class="ar">target</span>               <span class="cm"># זיהוי מערכת הפעלה (דורש root)</span>`},
+            {label:'bash — טכניקות מתקדמות', code:`# בקרת מהירות (T0=הכי איטי/סמוי, T5=הכי מהיר/רועש)\nnmap <span class="fl">-T4</span> <span class="fl">-F</span> <span class="ar">target</span>          <span class="cm"># סריקה מהירה, 100 פורטים מובילים</span>\n\n# סרוק טווח רשת\nnmap <span class="ar">192.168.1.0/24</span>         <span class="cm"># כל רשת ה-/24</span>\n\n# שמור פלט לקובץ (לדיווח)\nnmap <span class="fl">-oA</span> <span class="ar">scan_results</span> <span class="ar">target</span>\n<span class="cm"># יוצר: scan_results.nmap, .xml, .gnmap</span>\n\n# מנוע סקריפטים (NSE)\nnmap <span class="fl">--script</span> <span class="ar">vuln</span> <span class="ar">target</span>    <span class="cm"># הרץ סקריפטי פגיעויות</span>\nnmap <span class="fl">--script</span> <span class="ar">http-title</span> <span class="fl">-p</span> <span class="ar">80,443</span> <span class="ar">target</span>`}
+          ]
+        },
+        checkpoint:{
+          question:'מה עושה סריקת TCP SYN (-sS) בשונה מסריקת TCP connect מלאה (-sT)?',
+          opts:['סריקת SYN מהירה יותר אך פחות מדויקת','סריקת SYN שולחת SYN אך לא משלימה לחיצת יד משולשת, ולכן פחות סביר שתתועד','סריקת SYN עובדת רק על UDP','אין הבדל'],
+          answer:1,
+          explanation:'✓ נכון! סריקת SYN (-sS) נקראת "חצי פתוחה" — שולחת SYN, מקבלת SYN-ACK אם פתוח, ואז שולחת RST במקום להשלים לחיצת היד. מערכות רישום רבות מתעדות רק חיבורים מושלמים.'
+        },
+        tasks:['התקנתי nmap עם apt','סרקתי את localhost וזיהיתי פורטים פתוחים','השתמשתי ב--sV לזיהוי גרסאות שירות','שמרתי פלט סריקה עם -oA']
+      },
+      {
+        id:'log-analysis', title:'ניתוח לוגים ב-/var/log', lvlLabel:'רמה 4 — מבוא לאבטחה התקפית', difficulty:'מתקדם', duration:'35 דקות',
+        desc:'לוגים מספרים את סיפור כל מה שקרה במערכת. מגנים משתמשים בהם לגילוי פריצות. תוקפים מנסים למחוק אותם. חוקרי פורנזיקה משחזרים תקיפות מהם.',
+        theory:{
+          icon:'📋', title:'ארכיטקטורת הרישום של לינוקס',
+          body:`<p>לינוקס מתעדת אירועים קריטיים ב-<span class="ic">/var/log</span>. ה-daemon <strong>syslog</strong> מנתב הודעות לפי מתקן וחומרה. מערכות מודרניות משתמשות גם ב-<strong>journald</strong> (systemd), הניתן לשאילתה עם <span class="ic">journalctl</span>.</p>
+<h4>קבצי לוג קריטיים</h4>
+<ul>
+<li><span class="ic">/var/log/auth.log</span> — אימות: כניסות SSH, שימוש ב-sudo, סיסמאות שנכשלו</li>
+<li><span class="ic">/var/log/syslog</span> — הודעות מערכת כלליות</li>
+<li><span class="ic">/var/log/kern.log</span> — הודעות גרעין, אירועי חומרה</li>
+<li><span class="ic">/var/log/apache2/access.log</span> — בקשות שרת אינטרנט</li>
+<li><span class="ic">/var/log/dpkg.log</span> — התקנות/הסרות חבילות</li>
+<li><span class="ic">~/.bash_history</span> — היסטוריית פקודות משתמש</li>
+</ul>
+<p><strong>מחוון תקיפה:</strong> כשלונות SSH מסיביים ב-auth.log ואחריהם כניסה מוצלחת = <strong>מתקפת brute force</strong>.</p>`
+        },
+        handson:{
+          icon:'💻', title:'פקודות ניתוח לוגים',
+          commands:[
+            {label:'bash — קריאת לוגים בסיסית', code:`# קרא לוגים\nsudo cat /var/log/auth.log\nsudo tail <span class="fl">-f</span> /var/log/syslog      <span class="cm"># הזרמת לוג חיה (-f = עקוב)</span>\nsudo less /var/log/auth.log\n\n# Journald (לוגי systemd)\njournalctl                         <span class="cm"># כל הלוגים</span>\njournalctl <span class="fl">-u</span> <span class="ar">ssh</span>                  <span class="cm"># לוגי שירות SSH</span>\njournalctl <span class="fl">--since</span> <span class="ar">"2024-01-01"</span>   <span class="cm"># לוגים מתאריך</span>\njournalctl <span class="fl">-n</span> <span class="ar">50</span>                   <span class="cm"># 50 רשומות אחרונות</span>`},
+            {label:'bash — Grep לציד איומים', code:`# ציד ניסיונות SSH כושלים (זיהוי brute force)\ngrep <span class="ar">"Failed password"</span> /var/log/auth.log | tail -20\n\n# ספור כשלונות לפי IP (מצא את התוקף)\ngrep <span class="ar">"Failed password"</span> /var/log/auth.log | \\\n  awk <span class="ar">'{print $11}'</span> | sort | uniq <span class="fl">-c</span> | sort <span class="fl">-rn</span> | head -10\n\n# מצא כניסות מוצלחות אחרי כשלונות (מחוון פריצה)\ngrep <span class="ar">"Accepted"</span> /var/log/auth.log\n\n# מצא שימוש ב-sudo (ביקורת העלאת הרשאות)\ngrep <span class="ar">"sudo"</span> /var/log/auth.log\n\n# מצא יצירות משתמש חדשות\ngrep <span class="ar">"useradd\\|adduser"</span> /var/log/auth.log`},
+            {label:'bash — ניתוח מתקדם', code:`# חפש בכל הלוגים כתובת IP\ngrep <span class="fl">-r</span> <span class="ar">"192.168.1.100"</span> /var/log/\n\n# ספור אירועים לפי שעה (מצא זמן תקיפה)\ngrep <span class="ar">"Failed"</span> /var/log/auth.log | \\\n  awk <span class="ar">'{print $1, $2, $3}'</span> | cut <span class="fl">-d:</span> <span class="fl">-f1</span> | \\\n  sort | uniq <span class="fl">-c</span> | sort <span class="fl">-rn</span>\n\n# בדוק היסטוריית פקודות\ncat ~/.bash_history\nhistory | grep <span class="ar">"wget\\|curl\\|nc\\|bash"</span>   <span class="cm"># פקודות חשודות</span>`},
+          ],
+          after:`<div class="info-box success"><span class="ib-icon">🔍</span> <strong>טיפ מקצועי:</strong> תוקפים לרוב מריצים <code class="ic">history -c</code> ומוחקים את <code class="ic">~/.bash_history</code> כדי לכסות עקבות. פורנזית, חפש פערים במספרי שורות ההיסטוריה או קובץ היסטוריה ריק פתאום.</div>`
+        },
+        checkpoint:{
+          question:'ב-auth.log אתה רואה 500 רשומות "Failed password" מ-IP אחד, ואחריהן רשומת "Accepted password" אחת. מה זה מעיד?',
+          opts:['התנהגות משתמש רגילה','מתקפת brute force מוצלחת — התוקף ניחש את הסיסמה הנכונה אחרי ניסיונות רבים','לקוח SSH מוגדר שגוי','השרת אתחל מחדש'],
+          answer:1,
+          explanation:'✓ נכון! זו חתימת brute force קלאסית: ניסיונות כושלים רבים ואחריהם הצלחה. תגובה: חסום את ה-IP עם ufw, אלץ שינוי סיסמה, ובדוק מה עשה התוקף לאחר הכניסה.'
+        },
+        tasks:['קראתי /var/log/auth.log עם sudo','השתמשתי ב-grep לחיפוש בלוגים לפי מילת מפתח','הרצתי journalctl -u ssh לצפייה בלוגי SSH','השתמשתי ב-pipeline של awk לספירת אירועים לפי מקור']
+      }
+    ]
+  }
+];
+
+// ============================================================
+// מצב האפליקציה
+// ============================================================
+const STATE = {
+  completed: JSON.parse(localStorage.getItem('cyberLMS_heb_completed') || '[]'),
+  current: null,
+  quizAnswers: {}
+};
+
+function saveState() {
+  localStorage.setItem('cyberLMS_heb_completed', JSON.stringify(STATE.completed));
+}
+
+function getTotalLessons() {
+  return CURRICULUM.reduce((a,l) => a + l.lessons.length, 0);
+}
+
+function getCompletedCount() { return STATE.completed.length; }
+function isCompleted(id) { return STATE.completed.includes(id); }
+
+function markComplete(id) {
+  if (!STATE.completed.includes(id)) {
+    STATE.completed.push(id);
+    saveState();
+  }
+}
+
+// ============================================================
+// בניית סרגל הצד
+// ============================================================
+function buildSidebar() {
+  const sb = document.getElementById('sb');
+  sb.innerHTML = '';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'sb-header';
+  hdr.innerHTML = `<div class="sb-title">// מסלול הלמידה</div>`;
+  sb.appendChild(hdr);
+
+  CURRICULUM.forEach(level => {
+    const lessons = level.lessons;
+    const done = lessons.filter(l => isCompleted(l.id)).length;
+    const pct = lessons.length ? Math.round(done / lessons.length * 100) : 0;
+
+    const group = document.createElement('div');
+    group.className = `level-group ${level.cls}`;
+    group.dataset.levelId = level.id;
+
+    const isOpen = lessons.some(l => l.id === STATE.current?.id);
+    if (isOpen) group.classList.add('open');
+
+    group.innerHTML = `
+      <button class="level-btn">
+        <div class="lvl-badge">${level.num}</div>
+        <div class="lvl-info">
+          <div class="lvl-name">${level.title}</div>
+          <div class="lvl-sub">${done}/${lessons.length} הושלמו</div>
+        </div>
+        <span class="lvl-arrow">◀</span>
+      </button>
+      <div class="lvl-pbar"><div class="lvl-pbar-fill" style="width:${pct}%"></div></div>
+      <div class="lesson-list">
+        ${lessons.map(l => `
+          <button class="lesson-btn ${isCompleted(l.id) ? 'done' : ''} ${STATE.current?.id === l.id ? 'active' : ''}"
+                  data-lesson-id="${l.id}" data-level-id="${level.id}">
+            <div class="lesson-dot">${isCompleted(l.id) ? '✓' : ''}</div>
+            <span class="lesson-name">${l.title}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+
+    group.querySelector('.level-btn').addEventListener('click', () => {
+      group.classList.toggle('open');
+    });
+
+    group.querySelectorAll('.lesson-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lessonId = btn.dataset.lessonId;
+        const levelId = btn.dataset.levelId;
+        const lvl = CURRICULUM.find(l => l.id === levelId);
+        const lesson = lvl?.lessons.find(l => l.id === lessonId);
+        if (lesson) showLesson(lesson, lvl);
+      });
+    });
+
+    sb.appendChild(group);
+  });
+}
+
+// ============================================================
+// עדכון התקדמות
+// ============================================================
+function updateProgress() {
+  const total = getTotalLessons();
+  const done = getCompletedCount();
+  const pct = total ? Math.round(done / total * 100) : 0;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('doneCount').textContent = done;
+}
+
+// ============================================================
+// מסך פתיחה
+// ============================================================
+function showWelcome() {
+  STATE.current = null;
+  document.getElementById('content').innerHTML = `
+    <div class="welcome">
+      <div class="w-ascii">  ██████╗██╗   ██╗██████╗ ███████╗██████╗
+ ██╔════╝╚██╗ ██╔╝██╔══██╗██╔════╝██╔══██╗
+ ██║      ╚████╔╝ ██████╔╝█████╗  ██████╔╝
+ ██║       ╚██╔╝  ██╔══██╗██╔══╝  ██╔══██╗
+ ╚██████╗   ██║   ██████╔╝███████╗██║  ██║
+  ╚═════╝   ╚═╝   ╚═════╝ ╚══════╝╚═╝  ╚═╝</div>
+      <div>
+        <div class="w-title">לינוקס <em>&</em> סייבר<br>טרמינל לימוד</div>
+      </div>
+      <div class="w-sub">// ממוקד WSL · מעשי · מוכוון אבטחה</div>
+      <div class="w-stats">
+        <div class="w-stat"><span class="w-stat-n">16</span><div class="w-stat-l">שיעורים</div></div>
+        <div class="w-stat"><span class="w-stat-n">5</span><div class="w-stat-l">רמות</div></div>
+        <div class="w-stat"><span class="w-stat-n" id="ws-done">${getCompletedCount()}</span><div class="w-stat-l">הושלמו</div></div>
+        <div class="w-stat"><span class="w-stat-n">WSL2</span><div class="w-stat-l">פלטפורמה</div></div>
+      </div>
+      <button class="w-btn" onclick="startLearning()">▶ התחל אימון</button>
+    </div>
+  `;
+  buildSidebar();
+}
+
+function startLearning() {
+  for (const level of CURRICULUM) {
+    for (const lesson of level.lessons) {
+      if (!isCompleted(lesson.id)) {
+        showLesson(lesson, level);
+        return;
+      }
+    }
+  }
+  showLesson(CURRICULUM[0].lessons[0], CURRICULUM[0]);
+}
+
+// ============================================================
+// רינדור שיעור
+// ============================================================
+function showLesson(lesson, level) {
+  STATE.current = lesson;
+  buildSidebar();
+  updateProgress();
+
+  const allLessons = [];
+  CURRICULUM.forEach(lv => lv.lessons.forEach(l => allLessons.push({ lesson: l, level: lv })));
+  const idx = allLessons.findIndex(x => x.lesson.id === lesson.id);
+  const prev = idx > 0 ? allLessons[idx - 1] : null;
+  const next = idx < allLessons.length - 1 ? allLessons[idx + 1] : null;
+
+  const colorMap = { ng: '#00ff88', nc: '#00d4ff', np: '#a855f7', nr: '#ff3366', ny: '#fbbf24' };
+  const color = colorMap[level.color] || '#00ff88';
+  const done = isCompleted(lesson.id);
+
+  let html = `<div class="lesson-page">`;
+
+  // ניווט עם פירורי לחם
+  html += `<div class="lesson-crumb">
+    <span class="crumb-cur">${lesson.title}</span>
+    <span class="crumb-sep">/</span>
+    <span>${level.title}</span>
+    <span class="crumb-sep">/</span>
+    <span onclick="showWelcome()" style="cursor:pointer;color:var(--t3)">דף הבית</span>
+  </div>`;
+
+  // שורת ניווט
+  html += `<div class="nav-row">
+    <button class="nav-btn nxt" onclick="${next ? `showLesson(CURRICULUM.find(l=>l.id==='${next.level.id}').lessons.find(l=>l.id==='${next.lesson.id}'),CURRICULUM.find(l=>l.id==='${next.level.id}'))` : ''}" ${!next ? 'disabled' : ''}>הבא ▶</button>
+    <span style="font-family:var(--ui);font-size:11px;color:var(--t3);font-weight:600">${idx + 1} / ${allLessons.length}</span>
+    <button class="nav-btn" onclick="${prev ? `showLesson(CURRICULUM.find(l=>l.id==='${prev.level.id}').lessons.find(l=>l.id==='${prev.lesson.id}'),CURRICULUM.find(l=>l.id==='${prev.level.id}'))` : ''}" ${!prev ? 'disabled' : ''}>◀ קודם</button>
+  </div>`;
+
+  // כותרת שיעור
+  html += `<div class="lesson-hdr">
+    <div class="lesson-lvl-tag" style="color:${color}">
+      <span class="tag-dot" style="background:${color};box-shadow:0 0 6px ${color}"></span>
+      ${lesson.lvlLabel}
+    </div>
+    <div class="lesson-title">${lesson.title}</div>
+    <div class="lesson-desc">${lesson.desc}</div>
+    <div class="lesson-meta">
+      <span class="meta-pill">⏱ ${lesson.duration}</span>
+      <span class="meta-pill">⚡ ${lesson.difficulty}</span>
+      ${done ? `<span class="meta-pill" style="border-color:var(--ng);color:var(--ng)">✓ הושלם</span>` : ''}
+    </div>
+  </div>`;
+
+  // תיאוריה
+  if (lesson.theory) {
+    html += buildSection('theory', '📖', 'תיאוריה — איך זה עובד', lesson.theory.body);
+  }
+
+  // התקנה
+  if (lesson.install) {
+    let installBody = lesson.install.body || '';
+    if (lesson.install.commands) {
+      lesson.install.commands.forEach(cmd => { installBody += buildCodeBlock(cmd.label, cmd.code); });
+    }
+    if (lesson.install.after) installBody += lesson.install.after;
+    html += buildSection('install', '📦', 'התקנה', installBody);
+  }
+
+  // תרגול מעשי
+  if (lesson.handson) {
+    let hoBody = lesson.handson.body || '';
+    if (lesson.handson.commands) {
+      lesson.handson.commands.forEach(cmd => { hoBody += buildCodeBlock(cmd.label, cmd.code); });
+    }
+    if (lesson.handson.after) hoBody += lesson.handson.after;
+    html += buildSection('handson', '💻', 'תרגול מעשי', hoBody);
+  }
+
+  // מחסום ידע
+  if (lesson.checkpoint) {
+    const qid = `quiz_${lesson.id}`;
+    html += `
+    <div class="checkpoint-wrap s-card">
+      <div class="s-hdr">
+        <div class="s-icon" style="background:var(--ny-dim);border:1px solid #fbbf2425">🎯</div>
+        <div class="s-title">מחסום ידע — בחן את עצמך</div>
+      </div>
+      <div class="s-body">
+        <div class="quiz-q">${lesson.checkpoint.question}</div>
+        <div class="quiz-opts" id="${qid}_opts">
+          ${lesson.checkpoint.opts.map((o, i) => `
+            <div class="qopt" data-idx="${i}" onclick="selectOpt('${qid}', ${i})">
+              <div class="qletter">${String.fromCharCode(65+i)}</div>
+              <span>${o}</span>
+            </div>
+          `).join('')}
+        </div>
+        <button class="quiz-submit" id="${qid}_btn" onclick="submitQuiz('${qid}', ${lesson.checkpoint.answer}, '${encodeURIComponent(lesson.checkpoint.explanation)}')" disabled>שלח תשובה</button>
+        <div class="quiz-fb" id="${qid}_fb"></div>
+      </div>
+    </div>`;
+  }
+
+  // רשימת משימות
+  if (lesson.tasks) {
+    const taskKey = `tasks_${lesson.id}`;
+    const savedTasks = JSON.parse(localStorage.getItem(taskKey) || '[]');
+    html += `
+    <div class="s-card handson">
+      <div class="s-hdr">
+        <div class="s-icon">☑️</div>
+        <div class="s-title">רשימת משימות</div>
+      </div>
+      <div class="s-body">
+        <p>ודא שהשלמת כל משימה מעשית לפני סימון השיעור כהושלם:</p>
+        <div class="task-list">
+          <div class="task-list-label">// משימות לאימות</div>
+          <div class="tasks" id="tasks_${lesson.id}">
+            ${lesson.tasks.map((t, i) => `
+              <div class="task-item ${savedTasks.includes(i) ? 'done' : ''}" onclick="toggleTask('${lesson.id}', ${i})" data-task-idx="${i}">
+                <div class="task-cb">${savedTasks.includes(i) ? '✓' : ''}</div>
+                <span>${t}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // כפתור סיום
+  html += `
+    <button class="complete-btn ${done ? 'done' : ''}" id="completeBtn_${lesson.id}" onclick="completeLesson('${lesson.id}', '${level.id}')">
+      ${done ? '✓ שיעור הושלם' : '◉ סמן כהושלם'}
+    </button>`;
+
+  html += `</div>`;
+
+  const mainEl = document.getElementById('content');
+  mainEl.innerHTML = html;
+  mainEl.scrollTop = 0;
+  document.getElementById('main').scrollTop = 0;
+}
+
+// ============================================================
+// בניית כרטיס סקשן
+// ============================================================
+function buildSection(cls, icon, title, bodyHtml) {
+  return `
+  <div class="s-card ${cls}">
+    <div class="s-hdr">
+      <div class="s-icon">${icon}</div>
+      <div class="s-title">${title}</div>
+    </div>
+    <div class="s-body">${bodyHtml}</div>
+  </div>`;
+}
+
+let copyCounter = 0;
+function buildCodeBlock(label, code) {
+  const id = 'cb_' + (++copyCounter);
+  const plainCode = code.replace(/<[^>]+>/g, '');
+  return `
+  <div class="cmd-block">
+    <div class="cmd-hdr">
+      <span class="cmd-label">${label}</span>
+      <button class="copy-btn" id="${id}" onclick="copyCode('${id}', \`${plainCode.replace(/`/g,'\\`').replace(/\\/g,'\\\\').replace(/'/g,"\\'")}\`)">העתק</button>
+    </div>
+    <div class="cmd-body"><code>${code}</code></div>
+  </div>`;
+}
+
+// ============================================================
+// פונקציות אינטראקציה
+// ============================================================
+function copyCode(btnId, code) {
+  const cleanCode = code.trim();
+  navigator.clipboard.writeText(cleanCode).then(() => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.textContent = 'הועתק!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'העתק'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = cleanCode;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById(btnId);
+    if (btn) { btn.textContent = 'הועתק!'; btn.classList.add('copied'); setTimeout(() => { btn.textContent = 'העתק'; btn.classList.remove('copied'); }, 2000); }
+  });
+}
+
+function selectOpt(qid, idx) {
+  const opts = document.querySelectorAll(`#${qid}_opts .qopt`);
+  opts.forEach(o => o.classList.remove('sel'));
+  opts[idx].classList.add('sel');
+  STATE.quizAnswers[qid] = idx;
+  const btn = document.getElementById(`${qid}_btn`);
+  if (btn) btn.disabled = false;
+}
+
+function submitQuiz(qid, correctIdx, explanationEncoded) {
+  const explanation = decodeURIComponent(explanationEncoded);
+  const selected = STATE.quizAnswers[qid];
+  if (selected === undefined) return;
+
+  const opts = document.querySelectorAll(`#${qid}_opts .qopt`);
+  const fb = document.getElementById(`${qid}_fb`);
+  const btn = document.getElementById(`${qid}_btn`);
+
+  opts.forEach(o => o.style.pointerEvents = 'none');
+  if (btn) btn.disabled = true;
+
+  if (selected === correctIdx) {
+    opts[selected].classList.add('right');
+    fb.className = 'quiz-fb right';
+    fb.innerHTML = `✓ ${explanation}`;
+  } else {
+    opts[selected].classList.add('wrong');
+    opts[correctIdx].classList.add('right');
+    fb.className = 'quiz-fb wrong';
+    fb.innerHTML = `✗ לא נכון. ${explanation}`;
+  }
+}
+
+function toggleTask(lessonId, taskIdx) {
+  const taskKey = `tasks_${lessonId}`;
+  let saved = JSON.parse(localStorage.getItem(taskKey) || '[]');
+  if (saved.includes(taskIdx)) {
+    saved = saved.filter(i => i !== taskIdx);
+  } else {
+    saved.push(taskIdx);
+  }
+  localStorage.setItem(taskKey, JSON.stringify(saved));
+
+  const tasks = document.querySelectorAll(`#tasks_${lessonId} .task-item`);
+  tasks.forEach(t => {
+    const idx = parseInt(t.dataset.taskIdx);
+    if (saved.includes(idx)) {
+      t.classList.add('done');
+      t.querySelector('.task-cb').textContent = '✓';
+    } else {
+      t.classList.remove('done');
+      t.querySelector('.task-cb').textContent = '';
+    }
+  });
+}
+
+function completeLesson(lessonId, levelId) {
+  markComplete(lessonId);
+  updateProgress();
+  buildSidebar();
+
+  const btn = document.getElementById(`completeBtn_${lessonId}`);
+  if (btn) {
+    btn.classList.add('done');
+    btn.textContent = '✓ שיעור הושלם';
+  }
+
+  const metaArea = document.querySelector('.lesson-meta');
+  if (metaArea && !metaArea.querySelector('.done-pill')) {
+    const pill = document.createElement('span');
+    pill.className = 'meta-pill done-pill';
+    pill.style.cssText = 'border-color:var(--ng);color:var(--ng)';
+    pill.textContent = '✓ הושלם';
+    metaArea.appendChild(pill);
+  }
+}
+
+// ============================================================
+// אתחול
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  updateProgress();
+  showWelcome();
+  setTimeout(() => {
+    const firstGroup = document.querySelector('.level-group');
+    if (firstGroup) firstGroup.classList.add('open');
+  }, 100);
+});
+</script>
+</body>
+</html>
